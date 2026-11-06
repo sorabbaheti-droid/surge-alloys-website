@@ -13,8 +13,7 @@ STANDARDS = 'ASTM A128, IS 276, EN 10349 or your specification'
 FAMILIES = {
     'cone':   'Cone crushers',
     'jaw':    'Jaw crushers',
-    'impact': 'Impact crushers and hammer mills',
-    'other':  'Other wear parts',
+    'impact': 'Impact crushers',
 }
 
 PRODUCTS = [
@@ -24,20 +23,17 @@ PRODUCTS = [
     dict(slug='bowl-liners', name='Bowl liners', fam='cone', img='bowl-liner',
          what='The stationary liner seated in the bowl of a cone crusher.',
          where='Cone crushers, opposite the mantle.', grades=['mn18', 'mn22', 'mnxtra']),
-    dict(slug='jaw-and-side-plates', name='Jaw and side plates', fam='jaw', img='jaw-plate',
-         what='Fixed and swing jaw plates in your tooth profile, and the side or cheek plates that protect the frame.',
+    dict(slug='jaw-plates', name='Jaw plates', fam='jaw', img='jaw-plate',
+         what='Fixed and swing jaw plates in your tooth profile.',
          where='Primary jaw crushers.', grades=['mn14', 'mn18', 'mnxtra']),
+    dict(slug='side-plates', name='Side and cheek plates', fam='jaw', img=None,
+         what='The plates either side of the jaws that protect the crusher frame.',
+         where='Jaw crushers.', grades=['mn14', 'mn18']),
     dict(slug='blow-bars', name='Blow bars', fam='impact', img='blow-bars',
          what='The bars on the rotor of a horizontal shaft impactor that strike the feed.',
          where='Impact crushers where heavy impact keeps manganese hardening.', grades=['mn14', 'mn18', 'crmo']),
-    dict(slug='hammers', name='Hammers', fam='impact', img='hammers',
-         what='Swing hammers for hammer crushers and mills, cast to your drawing or sample.',
-         where='Hammer crushers and hammer mills.', grades=['mn14', 'mn18', 'crmo']),
-    dict(slug='wear-liners', name='Wear liners', fam='other', img='mill-liners',
-         what='Liner plates for chutes, hoppers and mills.',
-         where='Where impact keeps manganese working.', grades=['mn14', 'crmo']),
-    dict(slug='rollers-and-rings', name='Rollers and rings', fam='other', img=None,
-         what='Rollers and rings cast and machined to your drawing.',
-         where='Crushing and handling equipment, to drawing.', grades=['mn14', 'mn18', 'crmo']),
+    dict(slug='impact-plates', name='Impact plates', fam='impact', img=None,
+         what='The breaker plates and aprons the feed is thrown against inside an impact crusher.',
+         where='Horizontal shaft impact crushers.', grades=['mn14', 'mn18', 'crmo']),
 ]
 BY_SLUG = {p['slug']: p for p in PRODUCTS}

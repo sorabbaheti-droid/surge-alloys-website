@@ -8,10 +8,30 @@
 @import url("./base.css");
 
 :root {
-  /* brand orange from the Surge logo (#ea7a24) replaces Rim's signal */
-  --color-accent: oklch(70% 0.17 52); --color-focus: oklch(78% 0.15 52); --color-accent-ink: oklch(14% 0.03 52);
-  --color-white: oklch(99% 0.003 80); --color-scrim: oklch(9% 0.008 75 / 0.78);
+  /* warmer, more natural: the paper is a warm umber-black lit by amber, not a cold black */
+  --color-paper: oklch(14% 0.014 60); --color-paper-2: oklch(18% 0.018 62); --color-paper-3: oklch(11% 0.012 58);
+  --color-ink: oklch(95% 0.018 80); --color-ink-2: oklch(86% 0.022 78); --color-muted: oklch(72% 0.026 72); --color-muted-2: oklch(56% 0.022 68);
+  --color-rule: oklch(30% 0.022 62); --color-rule-2: oklch(21% 0.018 60);
+  /* brand orange from the Surge logo (#ea7a24), with an amber light beside it */
+  --color-accent: oklch(70% 0.17 52); --color-focus: oklch(80% 0.15 62); --color-accent-ink: oklch(14% 0.03 52);
+  --color-amber: oklch(82% 0.15 75); --color-glow: oklch(75% 0.16 62 / 0.16); --color-glow-2: oklch(70% 0.17 52 / 0.10);
+  --color-white: oklch(99% 0.003 80); --color-scrim: oklch(14% 0.014 60 / 0.8);
 }
+body { background: radial-gradient(1200px 700px at 85% -10%, var(--color-glow), transparent 60%), var(--color-paper); }
+.band { background: radial-gradient(900px 480px at 15% 0%, var(--color-glow-2), transparent 70%), var(--color-paper-2); }
+.sec:not(.band) { background: radial-gradient(800px 420px at 100% 0%, var(--color-glow-2), transparent 70%); }
+
+/* gentle reveal: content is visible by default; only with script on (.js) does it rise in once */
+.js .rv { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.js .rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; } }
+
+/* hero: the furnace glow breathes slowly, like real heat */
+.hero .shot img { animation: kb 22s var(--ease-out) both; }
+@keyframes kb { from { transform: scale(1.08); } to { transform: scale(1); } }
+.hero .shot::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(600px 380px at 60% 50%, oklch(80% 0.17 60 / 0.22), transparent 70%); mix-blend-mode: screen; animation: heat 6s var(--ease-in-out) infinite alternate; }
+@keyframes heat { from { opacity: 0.55; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hero .shot img, .hero .shot::before { animation: none; } }
 
 h1 { letter-spacing: var(--tracking-display); line-height: 1.02; }
 h2 { letter-spacing: -0.03em; line-height: 1.04; }
@@ -79,7 +99,7 @@ p { color: var(--color-ink-2); }
 .hero { position: relative; min-height: calc(100svh - 72px); display: grid; grid-template-rows: 1fr auto; }
 .hero .shot { position: absolute; inset: 0; margin: 0; }
 .hero .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; filter: saturate(0.9) contrast(1.05); }
-.hero .shot::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in oklab, var(--color-paper) 10%, transparent) 30%, color-mix(in oklab, var(--color-paper) 92%, transparent) 88%); }
+.hero .shot::after { content: ""; position: absolute; inset: 0; z-index: 2; background: linear-gradient(180deg, color-mix(in oklab, var(--color-paper) 10%, transparent) 30%, color-mix(in oklab, var(--color-paper) 92%, transparent) 88%); }
 .hero .text { position: relative; z-index: var(--z-raised); align-self: end; padding-block: var(--space-3xl) var(--space-xl); }
 .hero h1 { max-width: 14ch; }
 .hero .lead { margin-block: var(--space-md) var(--space-xl); color: var(--color-ink); }
@@ -116,7 +136,7 @@ p { color: var(--color-ink-2); }
 @media (max-width: 60rem) { .split, .split--rev { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } .split--rev > .copy { order: 0; } }
 
 /* diagram */
-.diagram { background: var(--color-paper-2); padding: var(--space-xl); }
+.diagram { background: radial-gradient(500px 300px at 20% 10%, var(--color-glow), transparent 70%), var(--color-paper-2); padding: var(--space-xl); }
 .diagram svg { width: 100%; height: auto; }
 .diagram path { fill: none; }
 .diagram .ax { stroke: var(--color-rule); }
@@ -267,3 +287,27 @@ p { color: var(--color-ink-2); }
 .qcard h2 { font-size: var(--text-2xl); }
 .qcard .facts { width: 100%; }
 @media (max-width: 60rem) { .ptext, .pvis { grid-column: 1 / -1; } .pvis { min-height: 300px; } .pfacts > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); } }
+
+/* inside a cone crusher: pinned scroll story on wide screens */
+.crusher { position: relative; height: 340vh; border-top: var(--rule-hair) solid var(--color-rule-2); background: radial-gradient(900px 600px at 70% 30%, var(--color-glow), transparent 70%), var(--color-paper-3); }
+.cr-stick { position: sticky; top: 72px; height: calc(100svh - 72px); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-2xl); align-items: center; }
+.cr-text { display: grid; gap: var(--space-xl); align-content: center; }
+.cr-steps { list-style: none; margin: 0; padding: 0; display: grid; }
+.cr-step { grid-area: 1 / 1; display: grid; gap: var(--space-sm); opacity: 0; transform: translateY(12px); transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
+.cr-step.on { opacity: 1; transform: none; }
+.cr-step h3 { font-size: var(--text-2xl); letter-spacing: -0.02em; }
+.cr-prog { display: flex; gap: var(--space-xs); }
+.cr-prog i { width: 32px; height: 2px; background: var(--color-rule); transition: background-color var(--dur-short) var(--ease-out); }
+.cr-prog i.on { background: var(--color-accent); }
+.cr-vis { height: min(78svh, 720px); min-width: 0; }
+.cr-vis canvas { width: 100%; height: 100%; display: block; }
+.no-js .cr-step { opacity: 1; transform: none; }
+@media (max-width: 60rem) {
+  .crusher { height: auto; padding-block: var(--space-2xl); }
+  .cr-stick { position: relative; top: 0; height: auto; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .cr-vis { order: -1; height: 72svh; max-height: 560px; }
+  .cr-steps { gap: var(--space-lg); }
+  .cr-step { grid-area: auto; opacity: 1; transform: none; }
+  .cr-prog { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .cr-step { transition: none; } }

@@ -72,7 +72,7 @@ def page(meta, body):
 <meta property="og:title" content="{esc(full)}"><meta property="og:description" content="{esc(meta['desc'])}">
 <meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}{og}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0d0c0b">
+<meta name="theme-color" content="#1c1612">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/assets/css/surge.css">
@@ -83,7 +83,7 @@ def page(meta, body):
 {body}
 </main>
 {FOOTER}
-<script src="/assets/js/surge.js" defer></script>
+<script src="/assets/js/surge.js" defer></script>{'<script src="/assets/js/crusher.js" defer></script>' if path == '/' else ''}
 </body></html>
 '''
 
@@ -95,12 +95,9 @@ def card(p, compact=False):
     return (f'<a class="pcard" href="/products/{p["slug"]}/">{pic}<div class="b"><span class="fam">{FAMILIES[p["fam"]]}</span>'
             f'<h3>{p["name"]}</h3>' + ('' if compact else f'<p>{p["where"]}</p>') + f'<span class="g">{gr}</span></div></a>')
 
-ASK_CARD = ('<a class="pcard" href="/contact/"><div class="pic type" aria-hidden="true"><span>Your part</span></div><div class="b">'
-            '<span class="fam">Made to order</span><h3>Something else?</h3><p>Any manganese steel casting from 10 kg to 4.5 t, to drawing or sample.</p><span class="g">Ask us</span></div></a>')
-
 def cards(ps=None, compact=False):
-    inner = ''.join(card(p, compact) for p in (ps or PRODUCTS)) + ('' if ps else ASK_CARD)
-    return '<div class="pcards">' + inner + '</div>'
+    inner = ''.join(card(p, compact) for p in (ps or PRODUCTS))
+    return '<div class="pcards pcards--3">' + inner + '</div>'
 
 def grades_table(only=None):
     rows = ''
@@ -123,7 +120,7 @@ def product_page(p):
     <dl class="pfacts">
       <div><dt>Works in</dt><dd>{p['where']}</dd></div>
       <div><dt>Grades</dt><dd>{', '.join(GRADES[g]['name'] for g in p['grades'])}, or as you specify</dd></div>
-      <div><dt>Size</dt><dd><span class="m">10 kg</span> to <span class="m">4.5 t</span> single piece</dd></div>
+      <div><dt>Size</dt><dd>Single pieces up to <span class="m">4.5 t</span></dd></div>
       <div><dt>Supplied</dt><dd>As cast, or machined to drawing</dd></div>
       <div><dt>Checked</dt><dd>Chemistry of every heat before pouring; dimensions with gauges, jigs and fixtures</dd></div>
       <div><dt>From a worn part</dt><dd>Yes, from a sample or a 3D scan we arrange</dd></div>
@@ -141,7 +138,7 @@ def product_page(p):
   <div class="c-full">{cards(rel[:3]).replace('class="pcards"', 'class="pcards pcards--3"', 1)}</div>
 </div></div></section>'''
     meta = dict(path=f'/products/{p["slug"]}/', title=f'{p["name"]} in manganese steel',
-                desc=f'{p["name"]} in manganese steel, including our MNxtra grade. {p["what"]} Cast from 10 kg to 4.5 t.', nav='products',
+                desc=f'{p["name"]} in manganese steel, including our MNxtra grade. {p["what"]} Cast up to 4.5 t.', nav='products',
                 og=f'/assets/img/parts/{p["img"]}.webp' if p['img'] else '/assets/img/mantles-row.webp')
     return meta, body
 
