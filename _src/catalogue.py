@@ -14,6 +14,7 @@ FAMILIES = {
     'cone':   'Cone crushers',
     'jaw':    'Jaw crushers',
     'impact': 'Impact crushers',
+    'roll':   'Roll crushers',
 }
 
 PRODUCTS = [
@@ -29,11 +30,17 @@ PRODUCTS = [
     dict(slug='side-plates', name='Side and cheek plates', fam='jaw', img=None,
          what='The plates either side of the jaws that protect the crusher frame.',
          where='Jaw crushers.', grades=['mn14', 'mn18']),
+    dict(slug='jaw-wedges', name='Jaw wedges', fam='jaw', img=None,
+         what='The wedges that clamp the jaw plates in place.',
+         where='Jaw crushers.', grades=['mn14', 'crmo']),
     dict(slug='blow-bars', name='Blow bars', fam='impact', img='blow-bars',
          what='The bars on the rotor of a horizontal shaft impactor that strike the feed.',
          where='Impact crushers where heavy impact keeps manganese hardening.', grades=['mn14', 'mn18', 'crmo']),
     dict(slug='impact-plates', name='Impact plates', fam='impact', img=None,
          what='The breaker plates and aprons the feed is thrown against inside an impact crusher.',
          where='Horizontal shaft impact crushers.', grades=['mn14', 'mn18', 'crmo']),
+    dict(slug='roll-crusher-shells', name='Roll crusher shells', fam='roll', img=None,
+         what='The replaceable shells on the rolls of a roll crusher.',
+         where='Single and double roll crushers.', grades=['mn14', 'mn18']),
 ]
 BY_SLUG = {p['slug']: p for p in PRODUCTS}

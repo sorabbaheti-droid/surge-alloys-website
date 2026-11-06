@@ -5,7 +5,7 @@
   const sec = document.querySelector('[data-crusher]');
   if (!sec) return;
   const cv = sec.querySelector('canvas'), ctx = cv.getContext('2d');
-  const steps = [...sec.querySelectorAll('.cr-step')], pips = [...sec.querySelectorAll('.cr-prog i')];
+  const steps = [], pips = [], AMBIENT = sec.hasAttribute('data-ambient');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pinned = () => matchMedia('(min-width: 60rem)').matches;
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -83,12 +83,12 @@
     ctx.fillStyle = lg; ctx.fillRect(0, 0, Wc, Hc);
 
     // camera: whole machine, then into the chamber, then ease back to see the liners
-    const z = !pinned() ? .15 : p < .2 ? 0 : p < .55 ? ease((p - .2) / .35) : 1 - .35 * ease((p - .78) / .22);
+    const z = AMBIENT ? (pinned() ? .55 : .3) : !pinned() ? .15 : p < .2 ? 0 : p < .55 ? ease((p - .2) / .35) : 1 - .35 * ease((p - .78) / .22);
     const scale = Math.min(Wc / 640, Hc / 780) * lerp(1, 1.9, z);
     const cy = lerp(60, 150, z);
     ctx.translate(Wc / 2, Hc / 2); ctx.scale(scale, scale); ctx.translate(0, -cy);
 
-    const hi = ease((p - .62) / .12);                         // liners light up in the last step
+    const hi = AMBIENT ? .85 : ease((p - .62) / .12);                         // liners light up in the last step
     // frame / housing
     ctx.lineWidth = 1.2 / scale * 1.2; ctx.strokeStyle = C.rule;
     poly([[-215, -30], [215, -30], [230, 300], [150, 330], [-150, 330], [-230, 300]]); ctx.stroke();
@@ -129,7 +129,7 @@
     for (const d of dust) { ctx.fillStyle = d.amber ? `rgba(255,170,80,${d.life})` : `rgba(190,175,155,${d.life * .8})`; ctx.fillRect(d.x, d.y, 1.6, 1.6); }
 
     // labels
-    const la = ease((p - .5) / .12);
+    const la = AMBIENT ? 0 : ease((p - .5) / .12);
     if (la > 0) {
       ctx.globalAlpha = la; ctx.fillStyle = C.ink; ctx.strokeStyle = C.muted; ctx.lineWidth = 1 / scale * 1.4;
       ctx.font = `500 ${13 / scale * 1.25}px Switzer, system-ui, sans-serif`;
@@ -145,7 +145,7 @@
   // ---- loop, scroll and visibility
   let p = 0, visible = false, last = 0, raf = 0;
   const progress = () => {
-    if (!pinned()) return .62;
+    if (AMBIENT || !pinned()) return .62;
     const b = sec.getBoundingClientRect(), total = b.height - innerHeight;
     return Math.max(0, Math.min(.999, -b.top / total));
   };

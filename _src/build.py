@@ -83,7 +83,7 @@ def page(meta, body):
 {body}
 </main>
 {FOOTER}
-<script src="/assets/js/surge.js" defer></script>{'<script src="/assets/js/crusher.js" defer></script>' if path == '/' else ''}
+<script src="/assets/js/surge.js" defer></script>
 </body></html>
 '''
 
@@ -97,7 +97,7 @@ def card(p, compact=False):
 
 def cards(ps=None, compact=False):
     inner = ''.join(card(p, compact) for p in (ps or PRODUCTS))
-    return '<div class="pcards pcards--3">' + inner + '</div>'
+    return '<div class="pcards">' + inner + '</div>'
 
 def grades_table(only=None):
     rows = ''
