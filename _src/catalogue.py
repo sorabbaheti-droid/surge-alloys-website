@@ -3,9 +3,9 @@
 GRADES = {
     'mn14':  dict(name='Mn 14', what='Standard austenitic manganese steel, about 12 to 14% Mn.', where='General crushing: jaws, cones and impact parts in most rock.'),
     'mn18':  dict(name='Mn 18', what='Higher manganese for faster, deeper work hardening.', where='Harder, more abrasive rock and heavier impact.'),
-    'mn22':  dict(name='Mn 22', what='The highest-manganese type, for the toughest duty.', where='Severe impact and heavy sections.'),
-    'crmo':  dict(name='Cr-Mo alloyed', what='Manganese steel with chromium and molybdenum additions.', where='Where liners spread or deform in service, and for abrasive feed.'),
-    'mnxtra': dict(name='MNxtra', what='Our own manganese grade, custom-developed by our metallurgists.', where='High-wear zones where conventional manganese grades reach their limits.'),
+    'mn22':  dict(name='Mn 22', what='The highest manganese type, for the toughest duty.', where='Severe impact and heavy sections.'),
+    'crmo':  dict(name='CrMo alloyed', what='Manganese steel with chromium and molybdenum additions.', where='Where liners spread or deform in service, and for abrasive feed.'),
+    'mnxtra': dict(name='MNxtra', what='Our own manganese grade, custom developed by our metallurgists.', where='High wear zones where conventional manganese grades reach their limits.'),
 }
 GRADE_ORDER = ['mn14', 'mn18', 'mn22', 'crmo', 'mnxtra']
 STANDARDS = 'ASTM A128, IS 276, EN 10349 or your specification'

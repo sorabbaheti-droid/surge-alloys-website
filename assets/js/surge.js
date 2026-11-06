@@ -56,6 +56,7 @@
 
   if (reduce || !G || !ST) {                               // no motion library or reduced motion: everything visible, no tweens
     d.querySelectorAll('.w').forEach(w => w.classList.add('on'));
+    d.querySelectorAll('.chain li').forEach(li => li.classList.add('on'));
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
     d.querySelectorAll('.rv').forEach(el => io.observe(el));
     return;
@@ -64,12 +65,70 @@
   G.registerPlugin(ST);
   if (window.Lenis) { const lenis = new Lenis({ lerp: 0.1, smoothWheel: true }); lenis.on('scroll', ST.update); G.ticker.add(t => lenis.raf(t * 1000)); G.ticker.lagSmoothing(0); }
 
-  // hero lines rise in
-  G.from('.hero h1 .ln > span', { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
-  G.from('.hero .copy > :not(h1)', { opacity: 0, y: 16, duration: 0.9, ease: 'expo.out', stagger: 0.06, delay: 0.35 });
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  // reveals
-  ST.batch('.rv', { start: 'top 88%', onEnter: els => els.forEach((el, k) => setTimeout(() => el.classList.add('in'), k * 70)) });
+  // hero: lines rise, the frame opens from a smaller rounded card, the facts count up
+  G.from('.hero h1 .ln > span', { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.12, delay: 0.15 });
+  G.from('.hero .copy > :not(h1)', { opacity: 0, y: 18, duration: 1, ease: 'expo.out', stagger: 0.07, delay: 0.4 });
+  G.from('.hero .frame', { scale: 0.86, borderRadius: 48, opacity: 0, duration: 1.6, ease: 'expo.out', delay: 0.1 });
+  G.from('.hero .frame img', { scale: 1.25, duration: 2.2, ease: 'expo.out', delay: 0.1 });
+  d.querySelectorAll('.facts-row b').forEach((b, k) => {
+    const txt = b.firstChild && b.firstChild.nodeType === 3 ? b.firstChild : null, n = txt && parseFloat(txt.textContent);
+    if (!txt || isNaN(n)) return;
+    const dec = (txt.textContent.split('.')[1] || '').length, o = { v: 0 };
+    G.to(o, { v: n, duration: 1.6, ease: 'power3.out', delay: 0.7 + k * 0.08, onUpdate: () => { txt.textContent = o.v.toFixed(dec); } });
+  });
+
+  // section headings rise word by word
+  d.querySelectorAll('main h2').forEach(h => {
+    if (h.closest('.hero')) return;
+    const walk = n => [...n.childNodes].forEach(c => {
+      if (c.nodeType === 3) { const f = d.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t.trim()) f.append(t); else { const w = d.createElement('span'); w.className = 'wr'; const i = d.createElement('span'); i.textContent = t; w.append(i); f.append(w); } }); c.replaceWith(f); }
+      else if (c.nodeType === 1 && !c.classList.contains('wr')) walk(c);
+    });
+    walk(h);
+    G.from(h.querySelectorAll('.wr > span'), { yPercent: 115, rotate: 3, duration: 1.1, ease: 'expo.out', stagger: 0.045, scrollTrigger: { trigger: h, start: 'top 88%' } });
+  });
+
+  // soft reveals for the rest
+  ST.batch('.rv:not(.photo):not(.q):not(.chain)', { start: 'top 88%', onEnter: els => els.forEach((el, k) => setTimeout(() => el.classList.add('in'), k * 80)) });
+
+  // photographs wipe open and settle
+  d.querySelectorAll('.photo').forEach(f => {
+    f.classList.add('in');
+    const m = f.querySelector('img,video');
+    G.fromTo(f, { clipPath: 'inset(14% 10% 14% 10% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 18px)', duration: 1.5, ease: 'expo.out', scrollTrigger: { trigger: f, start: 'top 85%' } });
+    if (m) G.fromTo(m, { scale: 1.22 }, { scale: 1, duration: 1.8, ease: 'expo.out', scrollTrigger: { trigger: f, start: 'top 85%' } });
+  });
+
+  // question cards deal in
+  G.set('.q', { opacity: 0, y: 60, rotate: (k) => [-3, 0, 3][k % 3] });
+  ST.batch('.q', { start: 'top 92%', onEnter: els => G.to(els, { opacity: 1, y: 0, rotate: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12 }) });
+
+  // product cards rise in a wave; on a mouse they tilt toward the pointer
+  G.set('.pcard', { opacity: 0, y: 50 });
+  ST.batch('.pcard', { start: 'top 94%', onEnter: els => G.to(els, { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 }) });
+  addEventListener('load', () => ST.refresh());
+  if (fine) d.querySelectorAll('.pcard').forEach(c => {
+    const rx = G.quickTo(c, 'rotationX', { duration: 0.5, ease: 'power3' }), ry = G.quickTo(c, 'rotationY', { duration: 0.5, ease: 'power3' });
+    G.set(c, { transformPerspective: 900 });
+    c.addEventListener('pointermove', e => { const b = c.getBoundingClientRect(); ry(((e.clientX - b.left) / b.width - .5) * 8); rx(-((e.clientY - b.top) / b.height - .5) * 8); });
+    c.addEventListener('pointerleave', () => { rx(0); ry(0); });
+  });
+
+  // the process chain draws itself, step by step
+  const chain = d.querySelector('.chain');
+  if (chain) { chain.classList.add('in'); ST.create({ trigger: chain, start: 'top 80%', once: true, onEnter: () => [...chain.children].forEach((li, k) => setTimeout(() => li.classList.add('on'), k * 160)) }); }
+
+  // buttons lean toward the pointer
+  if (fine) d.querySelectorAll('.btn').forEach(b => {
+    const x = G.quickTo(b, 'x', { duration: 0.4, ease: 'power3' }), y = G.quickTo(b, 'y', { duration: 0.4, ease: 'power3' });
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); x((e.clientX - r.left - r.width / 2) * 0.22); y((e.clientY - r.top - r.height / 2) * 0.3); });
+    b.addEventListener('pointerleave', () => { x(0); y(0); });
+  });
+
+  // the contact band's glow follows the pointer
+  d.querySelectorAll('.close-band').forEach(c => c.addEventListener('pointermove', e => { const b = c.getBoundingClientRect(); c.style.setProperty('--mx', (e.clientX - b.left) + 'px'); c.style.setProperty('--my', (e.clientY - b.top) + 'px'); }));
 
   // gentle parallax on framed photographs
   d.querySelectorAll('[data-parallax]').forEach(img => G.fromTo(img, { yPercent: -4 }, { yPercent: 4, ease: 'none', scrollTrigger: { trigger: img.closest('figure,.frame') || img, start: 'top bottom', end: 'bottom top', scrub: true } }));

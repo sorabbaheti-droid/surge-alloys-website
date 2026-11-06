@@ -40,14 +40,14 @@ FOOTER = f'''<footer class="ftr"><div class="container">
     <div><h2>Products</h2><ul>{''.join(f'<li><a href="/products/{p["slug"]}/">{p["name"]}</a></li>' for p in PRODUCTS)}</ul></div>
     <div><h2>Company</h2><ul><li><a href="/manganese-steel/">Manganese steel and MNxtra</a></li><li><a href="/plant/">Plant and quality</a></li><li><a href="/sustainability/">Sustainability</a></li><li><a href="/careers/">Careers</a></li><li><a href="{GROUP}" target="_blank" rel="noopener">Standard Alloys India</a></li></ul></div>
     <div><h2>Sales</h2><ul><li><a href="mailto:sales@surgealloys.com">sales@surgealloys.com</a></li><li><a href="{TEL}">{PHONE}</a></li><li><a href="tel:+919695763399">+91 96957 63399</a></li><li><a href="tel:+919352240003">+91 93522 40003</a></li></ul></div>
-    <div><h2>Works</h2><p>F-95 and 96, Ajaymeru Industrial Area, Palra, Ajmer 305025, Rajasthan, India</p><ul style="margin-top:var(--space-sm)"><li><a href="https://www.linkedin.com/company/surge-alloys-private-limited/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+    <div><h2>Works</h2><p>F95 and F96, Ajaymeru Industrial Area, Palra, Ajmer 305025, Rajasthan, India</p><ul style="margin-top:var(--space-sm)"><li><a href="https://www.linkedin.com/company/surge-alloys-private-limited/" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
   </div>
   <div class="legal"><p>© <span data-year>{datetime.date.today().year}</span> Surge Alloys Pvt. Ltd., a group company of Standard Alloys India</p><p><a href="/privacy/">Privacy</a></p></div>
 </div></footer>'''
 
 ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Surge Alloys Pvt. Ltd.", "url": SITE + "/",
        "logo": SITE + "/assets/img/logo-dark.png", "email": "sales@surgealloys.com", "telephone": "+91-145-297-0095",
-       "address": {"@type": "PostalAddress", "streetAddress": "F-95 & 96, Ajaymeru Industrial Area, Palra", "addressLocality": "Ajmer",
+       "address": {"@type": "PostalAddress", "streetAddress": "F95 and F96, Ajaymeru Industrial Area, Palra", "addressLocality": "Ajmer",
                    "postalCode": "305025", "addressRegion": "Rajasthan", "addressCountry": "IN"},
        "parentOrganization": {"@type": "Organization", "name": "Standard Alloys India Pvt. Ltd.", "url": "https://www.standardalloysindia.com/"},
        "sameAs": ["https://www.linkedin.com/company/surge-alloys-private-limited/"]}
@@ -81,9 +81,9 @@ def page(meta, body):
 {body}
 </main>
 {FOOTER}
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="/assets/js/vendor/lenis.min.js" defer></script>
+<script src="/assets/js/vendor/gsap.min.js" defer></script>
+<script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/assets/js/surge.js" defer></script>{'<script type="module" src="/assets/js/crusher3d.js"></script>' if path == '/' else ''}
 </body></html>
 '''
