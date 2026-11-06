@@ -21,7 +21,7 @@ esc = lambda s: html.escape(s, quote=True)
 NAV = [('mn', 'Manganese steel', '/manganese-steel/'), ('products', 'Products', '/products/'),
        ('plant', 'Plant', '/plant/'), ('esg', 'Sustainability', '/sustainability/'),
        ('careers', 'Careers', '/careers/'), ('about', 'About', GROUP + 'about/')]
-ARROW = ''  # Hallmark: no arrows glued to labels
+ARROW = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.6"/></svg>'
 
 def header(cur):
     links = ''.join(
@@ -29,9 +29,9 @@ def header(cur):
         (' target="_blank" rel="noopener"' if u.startswith('http') else '') + f'>{t}</a>' for k, t, u in NAV)
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr"><div class="container">
-  <a class="logo" href="/" aria-label="Surge Alloys home"><img src="/assets/img/logo-light.png" alt="Surge Alloys Pvt. Ltd." width="1400" height="887"></a>
+  <a class="logo" href="/" aria-label="Surge Alloys home"><img src="/assets/img/logo-dark.png" alt="Surge Alloys Pvt. Ltd." width="1400" height="887"></a>
   <button class="burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
-  <nav class="nav" id="nav" aria-label="Main">{links}<a class="btn btn--primary" href="/contact/">Get a quote</a></nav>
+  <nav class="nav" id="nav" aria-label="Main">{links}<a class="btn" href="/contact/">Get a quote</a></nav>
 </div></header>'''
 
 FOOTER = f'''<footer class="ftr"><div class="container">
@@ -52,10 +52,8 @@ ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Surge
        "parentOrganization": {"@type": "Organization", "name": "Standard Alloys India Pvt. Ltd.", "url": "https://www.standardalloysindia.com/"},
        "sameAs": ["https://www.linkedin.com/company/surge-alloys-private-limited/"]}
 
-FONTS = ('<link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://fonts.googleapis.com">'
-         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
-         '<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500&display=swap" rel="stylesheet">'
-         '<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&display=swap" rel="stylesheet">')
+FONTS = ('<link rel="preload" href="/assets/fonts/inter-tight-500.woff2" as="font" type="font/woff2" crossorigin>'
+         '<script>document.documentElement.classList.add("js")</script>')
 
 def page(meta, body):
     path = meta['path']; title = meta['title']
@@ -72,7 +70,7 @@ def page(meta, body):
 <meta property="og:title" content="{esc(full)}"><meta property="og:description" content="{esc(meta['desc'])}">
 <meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}{og}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#1c1612">
+<meta name="theme-color" content="#fbf8f4">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/assets/css/surge.css">
@@ -83,6 +81,9 @@ def page(meta, body):
 {body}
 </main>
 {FOOTER}
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="/assets/js/surge.js" defer></script>{'<script type="module" src="/assets/js/crusher3d.js"></script>' if path == '/' else ''}
 </body></html>
 '''
@@ -125,7 +126,7 @@ def product_page(p):
       <div><dt>Checked</dt><dd>Chemistry of every heat before pouring; dimensions with gauges, jigs and fixtures</dd></div>
       <div><dt>From a worn part</dt><dd>Yes, from a sample or a 3D scan we arrange</dd></div>
     </dl>
-    <div class="actions"><a class="btn btn--primary" href="{q}">Get a quote for this part</a><a class="btn" href="#grade">Choose the grade</a></div>
+    <div class="actions"><a class="btn btn--primary" href="{q}">Get a quote for this part</a><a class="btn btn--ghost" href="#grade">Choose the grade</a></div>
   </div>
   {vis}
 </div></div></section>

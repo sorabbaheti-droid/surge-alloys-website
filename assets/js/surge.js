@@ -1,67 +1,85 @@
-// Surge Alloys: logo intro, mobile menu, quote form. No dependencies.
+// Surge Alloys: smooth scroll and gentle motion (Lenis + GSAP when available), logo intro, menu, hero film.
 (() => {
   const d = document, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const G = window.gsap, ST = window.ScrollTrigger;
 
   // Logo intro: once per visit, home page only, skippable
   const intro = d.querySelector('.intro');
   if (intro) {
     let seen = false; try { seen = sessionStorage.getItem('surge-intro') === '1'; } catch (e) {}
-    const close = () => { if (!intro.isConnected) return; intro.classList.add('out'); setTimeout(() => intro.remove(), 450); try { sessionStorage.setItem('surge-intro', '1'); } catch (e) {} };
+    const close = () => { if (!intro.isConnected) return; intro.classList.add('out'); setTimeout(() => intro.remove(), 550); try { sessionStorage.setItem('surge-intro', '1'); } catch (e) {} };
     if (seen || reduce) intro.remove();
-    else {
-      const v = intro.querySelector('video');
-      v.addEventListener('ended', close);
-      v.play().catch(close);
-      setTimeout(close, 8000);
-      intro.querySelector('.skipi').addEventListener('click', close);
-      d.addEventListener('keydown', e => { if (e.key === 'Escape') close(); }, { once: true });
-    }
+    else { const v = intro.querySelector('video'); v.addEventListener('ended', close); v.play().catch(close); setTimeout(close, 8000); intro.querySelector('.skipi').addEventListener('click', close); }
   }
+
+  // Header: hairline once scrolled, tucks away when scrolling down
+  const hdr = d.querySelector('.hdr'); let last = 0;
+  const onScroll = () => { const y = scrollY; hdr.classList.toggle('scrolled', y > 8); hdr.classList.toggle('hide', y > 500 && y > last && !d.body.classList.contains('open')); last = y; };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   // Mobile menu
   const burger = d.querySelector('.burger');
   burger && burger.addEventListener('click', () => burger.setAttribute('aria-expanded', d.body.classList.toggle('open')));
 
-  // Quote form: prepares the enquiry for Gmail, Outlook, the email app, or the clipboard
-  const MAIL = 'sales@surgealloys.com';
-  d.querySelectorAll('[data-rfq]').forEach(f => {
-    const part = new URLSearchParams(location.search).get('part');
-    if (part && f.elements.part) f.elements.part.value = part;
-    f.querySelectorAll('.chips button').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
-    f.addEventListener('submit', e => {
-      e.preventDefault();
-      const v = n => (f.elements[n] && f.elements[n].value || '').trim();
-      let ok = true;
-      ['part', 'email'].forEach(n => { const el = f.elements[n]; const bad = !v(n) || (n === 'email' && !/^\S+@\S+\.\S+$/.test(v(n))); el.setAttribute('aria-invalid', bad); if (bad && ok) { el.focus(); ok = false; } });
-      const msg = f.querySelector('.msg');
-      if (!ok) { msg.textContent = 'Add the part and your email. Everything else is optional.'; return; }
-      msg.textContent = '';
-      const have = [...f.querySelectorAll('.chips button[aria-pressed=true]')].map(b => b.textContent).join(', ') || 'Not stated';
-      const body = [
-        `Part: ${v('part')}`, `Crusher / equipment: ${v('equip') || 'Not stated'}`, `Grade: ${v('grade') || 'Please recommend'}`,
-        `Quantity: ${v('qty') || 'Not stated'}`, `What I can send: ${have}`, `Problem / notes: ${v('notes') || '-'}`, '',
-        `Name: ${v('name')}`, `Company: ${v('company')}`, `Email: ${v('email')}`, `Phone: ${v('phone')}`, `Country: ${v('country')}`
-      ].join('\n');
-      const sub = 'Enquiry: ' + v('part'), eS = encodeURIComponent(sub), eB = encodeURIComponent(body);
-      let box = f.querySelector('.sendbox');
-      if (!box) { box = d.createElement('div'); box.className = 'sendbox'; f.append(box); }
-      box.innerHTML = `<h3>Your enquiry is ready</h3><p>Send it from the app you use, with your drawing or photographs attached.</p>
-        <div class="actions"><a class="btn btn--primary" target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to=${MAIL}&su=${eS}&body=${eB}">Send with Gmail</a>
-        <a class="btn" target="_blank" rel="noopener" href="https://outlook.office.com/mail/deeplink/compose?to=${MAIL}&subject=${eS}&body=${eB}">Outlook</a>
-        <a class="btn" href="mailto:${MAIL}?subject=${eS}&body=${eB}">Email app</a>
-        <button type="button" class="btn" data-copy>Copy enquiry</button></div>`;
-      box.querySelector('[data-copy]').addEventListener('click', ev => {
-        const t = `To: ${MAIL}\nSubject: ${sub}\n\n${body}`;
-        (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => ev.target.textContent = 'Copied', () => {
-          const ta = d.createElement('textarea'); ta.value = t; d.body.append(ta); ta.select(); d.execCommand('copy'); ta.remove(); ev.target.textContent = 'Copied'; });
-      });
-      box.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
-    });
-  });
+  // Videos that play only while on screen
+  const vio = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reduce) { if (!v.src && v.dataset.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); }), { rootMargin: '80px' });
+  d.querySelectorAll('video[data-autoplay]').forEach(v => vio.observe(v));
 
-  // Part chosen on a product page: shown above the embedded enquiry form
+  // Hero film: the furnace still, then the foundry clips crossfade in turn
+  const film = d.querySelector('[data-film]');
+  if (film && !reduce) {
+    const vids = [...film.querySelectorAll('video')]; let i = -1;
+    const next = () => {
+      vids.forEach(v => v.classList.remove('on'));
+      i = (i + 1) % vids.length; const v = vids[i];
+      if (!v.src) v.src = v.dataset.src;
+      v.currentTime = 0; v.play().then(() => v.classList.add('on')).catch(() => {});
+      v.onended = next;
+    };
+    setTimeout(next, 3200);
+  }
+
+  // Part chosen on a product page: shown above the enquiry form
   const pn = d.querySelector('[data-partnote]'), pp = new URLSearchParams(location.search).get('part');
   if (pn && pp) { pn.textContent = 'Enquiry for: ' + pp + '. Please mention it in the form.'; pn.hidden = false; }
 
   const y = d.querySelector('[data-year]'); if (y) y.textContent = new Date().getFullYear();
+
+  // Words that light up as you read
+  d.querySelectorAll('[data-lit]').forEach(p => {
+    const walk = n => [...n.childNodes].forEach(c => {
+      if (c.nodeType === 3) { const f = d.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t.trim()) f.append(t); else { const s = d.createElement('span'); s.className = 'w' + (n.classList && n.classList.contains('hl') ? ' hl' : ''); s.textContent = t; f.append(s); } }); c.replaceWith(f); }
+      else if (c.nodeType === 1) walk(c);
+    });
+    walk(p);
+  });
+
+  if (reduce || !G || !ST) {                               // no motion library or reduced motion: everything visible, no tweens
+    d.querySelectorAll('.w').forEach(w => w.classList.add('on'));
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    d.querySelectorAll('.rv').forEach(el => io.observe(el));
+    return;
+  }
+
+  G.registerPlugin(ST);
+  if (window.Lenis) { const lenis = new Lenis({ lerp: 0.1, smoothWheel: true }); lenis.on('scroll', ST.update); G.ticker.add(t => lenis.raf(t * 1000)); G.ticker.lagSmoothing(0); }
+
+  // hero lines rise in
+  G.from('.hero h1 .ln > span', { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.1, delay: 0.15 });
+  G.from('.hero .copy > :not(h1)', { opacity: 0, y: 16, duration: 0.9, ease: 'expo.out', stagger: 0.06, delay: 0.35 });
+
+  // reveals
+  ST.batch('.rv', { start: 'top 88%', onEnter: els => els.forEach((el, k) => setTimeout(() => el.classList.add('in'), k * 70)) });
+
+  // gentle parallax on framed photographs
+  d.querySelectorAll('[data-parallax]').forEach(img => G.fromTo(img, { yPercent: -4 }, { yPercent: 4, ease: 'none', scrollTrigger: { trigger: img.closest('figure,.frame') || img, start: 'top bottom', end: 'bottom top', scrub: true } }));
+
+  // the plant photo strip drifts sideways as you scroll
+  d.querySelectorAll('[data-drift]').forEach(row => G.fromTo(row, { x: 0 }, { x: () => -(row.scrollWidth - innerWidth) * 0.6, ease: 'none', scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } }));
+
+  // statement words light up
+  d.querySelectorAll('[data-lit]').forEach(p => {
+    const ws = [...p.querySelectorAll('.w')];
+    ST.create({ trigger: p, start: 'top 80%', end: 'bottom 45%', scrub: true, onUpdate: s => { const n = Math.round(s.progress * ws.length); ws.forEach((w, k) => w.classList.toggle('on', k < n)); } });
+  });
 })();

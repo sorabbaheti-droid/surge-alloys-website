@@ -17,19 +17,19 @@ if (host) {
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environmentIntensity = 0.55;
+  scene.environmentIntensity = 0.85;
 
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
 
   // ---- light: a warm work light from above, amber bounce from below, cool rim
-  scene.add(new THREE.HemisphereLight(0xffd9a8, 0x2a1a10, 0.6));
-  const key = new THREE.DirectionalLight(0xffc27a, 3.2); key.position.set(-4, 7, 5); key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024); Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -4 }); scene.add(key);
-  const glow = new THREE.PointLight(0xff8a2a, 14, 7, 2); glow.position.set(0.6, 0.4, 1.8); scene.add(glow);
+  scene.add(new THREE.HemisphereLight(0xfff1e0, 0xc8a585, 1.1));
+  const key = new THREE.DirectionalLight(0xffc27a, 3.2); key.position.set(1.2, 8, 6.5); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 6; Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9 }); scene.add(key);
+  const glow = new THREE.PointLight(0xff8a2a, 9, 7, 2); glow.position.set(0.6, 0.4, 1.8); scene.add(glow);
   const rim = new THREE.DirectionalLight(0x9fb8ff, 0.9); rim.position.set(5, 3, -6); scene.add(rim);
 
   // ---- materials
-  const paint = new THREE.MeshStandardMaterial({ color: 0x3a3632, metalness: 0.35, roughness: 0.55 });          // cast frame, painted
+  const paint = new THREE.MeshStandardMaterial({ color: 0x4a4540, metalness: 0.35, roughness: 0.55 });          // cast frame, painted
   const paintOr = new THREE.MeshStandardMaterial({ color: 0xb4561c, metalness: 0.3, roughness: 0.6 });          // Surge orange accents
   const steel = new THREE.MeshStandardMaterial({ color: 0xc9c0b4, metalness: 0.95, roughness: 0.3, emissive: 0x2a1204, emissiveIntensity: 0.6 });          // manganese liners
   const dark = new THREE.MeshStandardMaterial({ color: 0x24211e, metalness: 0.6, roughness: 0.6 });
@@ -79,7 +79,7 @@ if (host) {
   const pulley = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.18, 48), dark); pulley.rotation.z = Math.PI / 2; pulley.position.set(-2.82, -0.7, 0); machine.add(pulley);
   const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.1, 0.12), paintOr); spoke.position.copy(pulley.position); spoke.position.x -= 0.1; machine.add(spoke);
   // floor
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(9, 64), new THREE.MeshStandardMaterial({ color: 0x1a1410, roughness: 1 }));
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(9, 64), new THREE.ShadowMaterial({ color: 0x7a4a20, opacity: 0.18 }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = -1.16; floor.receiveShadow = true; scene.add(floor);
 
   // ---- rock: one jagged stone, instanced
@@ -131,7 +131,7 @@ if (host) {
     for (let j = 0; j < dustN; j++) { if (dustL[j] <= 0) { dustPos[j * 3 + 1] = -99; continue; } dustL[j] -= dt; dustV[j * 3 + 1] -= 1.5 * dt; for (let k = 0; k < 3; k++) dustPos[j * 3 + k] += dustV[j * 3 + k] * dt; }
     dustGeo.attributes.position.needsUpdate = true;
     pulley.rotation.x += dt * 9; spoke.rotation.x = pulley.rotation.x;
-    glow.intensity = 12 + Math.sin(t * 3.1) * 1.5 + Math.sin(t * 7.3) * .8;   // the amber light breathes a little
+    glow.intensity = 9 + Math.sin(t * 3.1) * 1.2 + Math.sin(t * 7.3) * .6;   // the amber light breathes a little
   }
 
   // ---- camera: a slow orbit; scrolling past the section brings it closer to the chamber
