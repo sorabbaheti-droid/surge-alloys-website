@@ -83,7 +83,7 @@ def page(meta, body):
 {body}
 </main>
 {FOOTER}
-<script src="/assets/js/surge.js" defer></script>
+<script src="/assets/js/surge.js" defer></script>{'<script type="module" src="/assets/js/crusher3d.js"></script>' if path == '/' else ''}
 </body></html>
 '''
 
