@@ -84,7 +84,7 @@ def page(meta, body):
 <script src="/assets/js/vendor/lenis.min.js" defer></script>
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
-<script src="/assets/js/surge.js" defer></script>{'<script type="module" src="/assets/js/crusher3d.js"></script>' if path == '/' else ''}
+<script src="/assets/js/surge.js" defer></script>{'<script type="module" src="/assets/js/circuit.js"></script>' if path == '/' else ''}
 </body></html>
 '''
 
@@ -99,6 +99,16 @@ def card(p, compact=False):
 def cards(ps=None, compact=False):
     inner = ''.join(card(p, compact) for p in (ps or PRODUCTS))
     return '<div class="pcards">' + inner + '</div>'
+
+def showcase():
+    out = ''
+    for i, p in enumerate(PRODUCTS, 1):
+        pic = (f'<img src="/assets/img/parts/{p["img"]}.webp" alt="{esc(p["name"])}" loading="lazy">' if p['img']
+               else f'<span class="sp-type" aria-hidden="true">{p["name"]}</span>')
+        gr = ', '.join(GRADES[g]['name'] for g in p['grades'])
+        out += (f'<a class="sp" href="/products/{p["slug"]}/"><span class="sp-n">{i:02d}</span><div class="sp-pic">{pic}</div>'
+                f'<div class="sp-b"><span class="fam">{FAMILIES[p["fam"]]}</span><h3>{p["name"]}</h3><p>{p["what"]}</p><span class="g">{gr}</span></div></a>')
+    return out
 
 def grades_table(only=None):
     rows = ''
@@ -160,7 +170,7 @@ def main():
         txt = f.read_text()
         m = re.match(r'\s*<!--(\{.*?\})-->\s*', txt, re.S)
         meta = json.loads(m.group(1))
-        body = txt[m.end():].replace('{{ARROW}}', ARROW).replace('{{CARDS_COMPACT}}', cards(compact=True)).replace('{{CARDS}}', cards()).replace('{{GRADES_TABLE}}', grades_table())
+        body = txt[m.end():].replace('{{ARROW}}', ARROW).replace('{{CARDS_COMPACT}}', cards(compact=True)).replace('{{CARDS}}', cards()).replace('{{SHOWCASE}}', showcase()).replace('{{GRADES_TABLE}}', grades_table())
         if meta.get('intro'):
             meta['pre'] = ('<div class="intro" aria-hidden="true"><video src="/assets/img/logo-anim.mp4" muted playsinline preload="auto" '
                            'poster="/assets/img/logo-anim-last.jpg"></video><button class="skipi" type="button">Skip</button></div>\n')

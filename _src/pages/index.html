@@ -16,7 +16,6 @@
     <div class="frame" data-film>
       <img src="/assets/img/hero-furnace.webp" srcset="/assets/img/hero-furnace-sm.webp 900w, /assets/img/hero-furnace.webp 1920w" sizes="(min-width: 62rem) 52vw, 100vw" width="1920" height="1514" alt="Manganese steel crusher liners glowing as they leave the heat treatment furnace" fetchpriority="high" data-parallax>
       <video muted playsinline preload="none" data-src="/assets/media/glow.mp4" aria-hidden="true"></video>
-      <video muted playsinline preload="none" data-src="/assets/media/pour-suit.mp4" aria-hidden="true"></video>
       <span class="chip"><i></i>Live from our foundry</span>
     </div>
   </div>
@@ -46,36 +45,56 @@
   </div>
 </div></section>
 
-<section class="crusher" data-crusher3d aria-labelledby="cr-h"><div class="container">
-  <div class="cr-text rv">
-    <span class="kicker">Service</span>
-    <h2 id="cr-h">Crushing chamber optimisation</h2>
-    <p class="lead">Liners shaped and specified for your feed, your crusher and your product, not copied from the last set.</p>
-    <ul class="ticks-list">
-      <li>We measure the worn liners<span>3D scan</span></li>
-      <li>We redesign the profile<span>and the grade</span></li>
-      <li>You run the new set<span>and compare wear life</span></li>
-    </ul>
-    <div class="actions"><a class="btn" href="/contact/?part=Crushing+chamber+optimisation">Ask for a chamber study {{ARROW}}</a></div>
+<section class="circuit" data-circuit aria-label="A crushing circuit, from the jaw crusher to the cone crusher to the impact crusher">
+  <div class="stage">
+    <canvas aria-hidden="true"></canvas>
+    <div class="caps">
+      <div class="cap cap--intro" data-at="-1,0.11"><span class="kicker">The crushing circuit</span><h2>Follow the rock.</h2><p>From the first blow in the jaw to the finished product on the stockpile. Every stage runs on parts we cast.</p><span class="hint">Scroll</span></div>
+      <div class="cap" data-at="0.11,0.34"><span class="stg">Primary</span><h3>Jaw crusher</h3><p>Run of mine rock meets the jaw plates first. Side plates and wedges hold the chamber together under every stroke.</p><a class="link" href="/products/jaw-plates/">Jaw plates</a></div>
+      <div class="cap" data-at="0.34,0.6"><span class="stg">Secondary</span><h3>Cone crusher</h3><p>The mantle gyrates inside the concave and squeezes the rock down to size. Bowl liners carry the load in the top shell.</p><a class="link" href="/products/concaves-and-mantles/">Mantles and concaves</a></div>
+      <div class="cap" data-at="0.6,0.87"><span class="stg">Tertiary</span><h3>Impact crusher</h3><p>Blow bars hurl the stone against the impact plates and shape it into a clean, cubical product.</p><a class="link" href="/products/blow-bars/">Blow bars</a></div>
+      <div class="cap cap--end" data-at="0.87,2"><h2>Every stage, one foundry.</h2><p>Jaw, cone, impact and roll crusher parts in manganese steel.</p><a class="btn" href="/products/">See all products {{ARROW}}</a></div>
+    </div>
+    <div class="rail" aria-hidden="true"><span>Primary</span><span>Secondary</span><span>Tertiary</span><i></i></div>
   </div>
-  <div class="cr-vis" aria-hidden="true"><canvas></canvas></div>
-</div></section>
+</section>
 
-<section class="sec"><div class="container">
-  <div class="head head--row rv"><div><span class="kicker">What we cast</span><h2>Wear parts for every crusher in the circuit.</h2></div><a class="btn btn--ghost" href="/products/">All products {{ARROW}}</a></div>
-  {{CARDS}}
-</div></section>
+<section class="show" data-show aria-labelledby="show-h">
+  <div class="show-pin">
+    <div class="container show-head"><div><span class="kicker">What we cast</span><h2 id="show-h">Wear parts for every crusher in the circuit.</h2></div><a class="btn btn--ghost" href="/products/">All products {{ARROW}}</a></div>
+    <div class="show-track">{{SHOWCASE}}</div>
+  </div>
+</section>
 
-<section class="sec tint"><div class="container"><div class="grid12">
+<section class="mnx" aria-labelledby="mnx-h">
+  <div class="container">
+    <span class="kicker">Our own grade</span>
+    <h2 id="mnx-h" class="mnx-word" data-mnx>MNxtra</h2>
+    <div class="mnx-cols">
+      <p class="lead">Manganese steel leaves our quench tough. Under the blows of crushing its working face hardens to above 500 HB while the core stays tough. MNxtra is custom developed by our metallurgists for the zones that wear first.</p>
+      <ul class="mnx-grades"><li>Mn 14</li><li>Mn 18</li><li>Mn 22</li><li>CrMo alloyed</li><li class="x">MNxtra</li></ul>
+      <a class="btn btn--light" href="/manganese-steel/">Compare the grades {{ARROW}}</a>
+    </div>
+  </div>
+  <canvas class="sparks" aria-hidden="true"></canvas>
+</section>
+
+<section class="molten" data-molten aria-label="Single castings up to 4.5 tonnes">
+  <video src="/assets/media/pour-suit.mp4" poster="/assets/media/pour-suit.jpg" muted loop playsinline preload="none" data-autoplay aria-hidden="true"></video>
+  <div class="molten-mask" aria-hidden="true"><span>4.5<small>t</small></span></div>
+  <div class="container molten-copy"><p><b>Up to 4.5 tonnes in a single piece.</b> 450 tonnes poured every month, from two 3 tonne crucibles, heat treated in two 10 tonne furnaces.</p></div>
+</section>
+
+<section class="sec"><div class="container"><div class="grid12">
   <div class="split">
     <div class="copy rv">
-      <span class="kicker">Our grades</span>
-      <h2>It gets harder where it’s hit.</h2>
-      <p class="lead">Manganese steel leaves our quench tough. Under the blows of crushing, its working face hardens to above 500 HB while the core stays tough.</p>
-      <p>We pour 14, 18 and 22% Mn, chromium molybdenum alloyed grades, and <b class="or">MNxtra</b>, our own grade for the zones that wear first.</p>
-      <div class="actions"><a class="btn btn--ghost" href="/manganese-steel/">Compare the grades {{ARROW}}</a></div>
+      <span class="kicker">Service</span>
+      <h2>Crushing chamber optimisation.</h2>
+      <p class="lead">Liners shaped and specified for your feed, your crusher and your product, not copied from the last set.</p>
+      <ul class="facts"><li>We measure the worn liners<span class="m">3D scan</span></li><li>We redesign the profile<span class="m">and the grade</span></li><li>You run the new set<span class="m">and compare wear life</span></li></ul>
+      <div class="actions"><a class="btn" href="/contact/?part=Crushing+chamber+optimisation">Ask for a chamber study {{ARROW}}</a></div>
     </div>
-    <figure class="photo rv"><img src="/assets/img/mantles-close.webp" srcset="/assets/img/mantles-close-sm.webp 900w, /assets/img/mantles-close.webp 1920w" sizes="(min-width: 62rem) 46vw, 100vw" width="1920" height="1280" alt="Finished manganese steel mantles" loading="lazy" data-parallax></figure>
+    <figure class="photo rv"><img src="/assets/img/cad.webp" srcset="/assets/img/cad-sm.webp 900w, /assets/img/cad.webp 1920w" sizes="(min-width: 62rem) 46vw, 100vw" alt="Engineer redesigning a liner profile in CAD" loading="lazy" data-parallax></figure>
   </div>
 </div></div></section>
 
@@ -91,20 +110,7 @@
   </div>
 </div></div></section>
 
-<section class="sec tint"><div class="container">
-  <div class="head rv"><span class="kicker">One plant</span><h2>Pattern to dispatch, under one roof.</h2></div>
-  <ol class="chain rv">
-    <li><b>Method</b><span>Feeding and gating designed by our engineers</span></li>
-    <li><b>Pattern</b><span>Made and checked to drawing</span></li>
-    <li><b>Moulding</b><span>20 t/h no bake line</span></li>
-    <li><b>Melting</b><span>Two 3 t induction crucibles</span></li>
-    <li><b>Heat treatment</b><span>Two 10 t furnaces, water quench</span></li>
-    <li><b>Fettling</b><span>Gouging, shot blast, grinding</span></li>
-    <li><b>Machining</b><span>7 VTLs up to 2,300 mm</span></li>
-    <li><b>Inspection</b><span>Chemistry, structure, fit</span></li>
-  </ol>
-  <div class="actions rv" style="margin-top:40px"><a class="btn btn--ghost" href="/plant/">See the plant {{ARROW}}</a></div>
-</div></section>
+
 
 <section class="sec"><div class="container"><div class="grid12">
   <div class="split">

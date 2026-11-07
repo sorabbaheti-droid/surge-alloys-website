@@ -39,6 +39,23 @@
     setTimeout(next, 3200);
   }
 
+  // MNxtra band: sparks drift up out of the glow
+  const sk = d.querySelector('.mnx .sparks');
+  if (sk && !reduce) {
+    const c = sk.getContext('2d'), P = []; let on = false, W = 0, H = 0;
+    const size = () => { const r = devicePixelRatio > 1 ? 2 : 1; W = sk.width = sk.clientWidth * r; H = sk.height = sk.clientHeight * r; };
+    const add = () => P.push({ x: W * (0.15 + Math.random() * 0.7), y: H + 10, vx: (Math.random() - .5) * .6, vy: -(0.6 + Math.random() * 1.6), l: 1, r: .6 + Math.random() * 1.8, f: Math.random() * 6 });
+    const tick = () => {
+      c.clearRect(0, 0, W, H); if (P.length < 140) { add(); add(); }
+      c.globalCompositeOperation = 'lighter';
+      for (let i = P.length - 1; i >= 0; i--) { const p = P[i]; p.x += p.vx + Math.sin(p.f += .05) * .3; p.y += p.vy; p.l -= .0045; if (p.l <= 0 || p.y < 0) { P.splice(i, 1); continue; }
+        const a = p.l * (.6 + .4 * Math.sin(p.f * 3)); c.fillStyle = `rgba(255,${150 + 80 * p.l | 0},70,${a})`; c.beginPath(); c.arc(p.x, p.y, p.r * (devicePixelRatio > 1 ? 2 : 1), 0, 7); c.fill(); }
+      if (on) requestAnimationFrame(tick);
+    };
+    size(); addEventListener('resize', size);
+    new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !on) { on = true; requestAnimationFrame(tick); } on = v; }).observe(sk);
+  }
+
   // Part chosen on a product page: shown above the enquiry form
   const pn = d.querySelector('[data-partnote]'), pp = new URLSearchParams(location.search).get('part');
   if (pn && pp) { pn.textContent = 'Enquiry for: ' + pp + '. Please mention it in the form.'; pn.hidden = false; }
@@ -81,7 +98,7 @@
 
   // section headings rise word by word
   d.querySelectorAll('main h2').forEach(h => {
-    if (h.closest('.hero')) return;
+    if (h.closest('.hero, .caps') || h.hasAttribute('data-mnx')) return;
     const walk = n => [...n.childNodes].forEach(c => {
       if (c.nodeType === 3) { const f = d.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t.trim()) f.append(t); else { const w = d.createElement('span'); w.className = 'wr'; const i = d.createElement('span'); i.textContent = t; w.append(i); f.append(w); } }); c.replaceWith(f); }
       else if (c.nodeType === 1 && !c.classList.contains('wr')) walk(c);
@@ -106,7 +123,7 @@
   ST.batch('.q', { start: 'top 92%', onEnter: els => G.to(els, { opacity: 1, y: 0, rotate: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12 }) });
 
   // product cards rise in a wave; on a mouse they tilt toward the pointer
-  G.set('.pcard', { opacity: 0, y: 50 });
+  if (d.querySelector('.pcard')) G.set('.pcard', { opacity: 0, y: 50 });
   ST.batch('.pcard', { start: 'top 94%', onEnter: els => G.to(els, { opacity: 1, y: 0, duration: 1, ease: 'expo.out', stagger: 0.08 }) });
   addEventListener('load', () => ST.refresh());
   if (fine) d.querySelectorAll('.pcard').forEach(c => {
@@ -115,10 +132,6 @@
     c.addEventListener('pointermove', e => { const b = c.getBoundingClientRect(); ry(((e.clientX - b.left) / b.width - .5) * 8); rx(-((e.clientY - b.top) / b.height - .5) * 8); });
     c.addEventListener('pointerleave', () => { rx(0); ry(0); });
   });
-
-  // the process chain draws itself, step by step
-  const chain = d.querySelector('.chain');
-  if (chain) { chain.classList.add('in'); ST.create({ trigger: chain, start: 'top 80%', once: true, onEnter: () => [...chain.children].forEach((li, k) => setTimeout(() => li.classList.add('on'), k * 160)) }); }
 
   // buttons lean toward the pointer
   if (fine) d.querySelectorAll('.btn').forEach(b => {
@@ -135,6 +148,25 @@
 
   // the plant photo strip drifts sideways as you scroll
   d.querySelectorAll('[data-drift]').forEach(row => G.fromTo(row, { x: 0 }, { x: () => -(row.scrollWidth - innerWidth) * 0.6, ease: 'none', scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } }));
+
+  // product showcase: pinned on a wide screen, the parts slide past
+  const show = d.querySelector('[data-show]');
+  if (show) {
+    const track = show.querySelector('.show-track');
+    G.from(show.querySelectorAll('.sp'), { opacity: 0, x: 120, duration: 1.3, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: show, start: 'top 70%' } });
+    ST.matchMedia({ '(min-width: 62.01rem)': () => {
+      const dist = () => Math.max(0, track.scrollWidth - innerWidth);
+      G.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: show, start: 'top top', end: () => '+=' + dist(), pin: true, scrub: 0.8, invalidateOnRefresh: true, anticipatePin: 1 } });
+    } });
+  }
+
+  // MNxtra settles out of a wide spacing
+  const mw = d.querySelector('[data-mnx]');
+  if (mw) G.fromTo(mw, { letterSpacing: '0.08em', opacity: 0, y: 50 }, { letterSpacing: '-0.06em', opacity: 1, y: 0, duration: 2, ease: 'expo.out', scrollTrigger: { trigger: mw, start: 'top 88%' } });
+
+  // 4.5 t: the molten letters close in as you arrive
+  const mol = d.querySelector('[data-molten] .molten-mask span');
+  if (mol) G.fromTo(mol, { scale: 1.5, yPercent: 10 }, { scale: 1, yPercent: 0, ease: 'none', scrollTrigger: { trigger: mol.closest('.molten'), start: 'top bottom', end: 'center center', scrub: true } });
 
   // statement words light up
   d.querySelectorAll('[data-lit]').forEach(p => {
