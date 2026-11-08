@@ -328,6 +328,35 @@ function run(host) {
     if (camera.aspect > 1.3) camera.setViewOffset(w, h, -w * 0.13, 0, w, h); else camera.clearViewOffset();
     camera.updateProjectionMatrix();
   }
+  // callouts: a dot on the part, a leader line, and a label that links to the product
+  const svg = host.querySelector('.leaders');
+  const T = { // world anchor, label offset in px, scroll window
+    'jaw-plates':  { w: [JX + xF + 0.02, JY + 1.55, 0.6], o: [-30, -170], at: [0.15, 0.29] },
+    'side-plates': { w: [JX + xF + 0.32, JY + 1.95, -0.7], o: [230, 150], at: [0.15, 0.29] },
+    'concaves':    { w: [CX + 0.97, CY + 1.05, 0.02], o: [190, -150], at: [0.41, 0.55] },
+    'mantles':     { w: [CX + 0.03, CY + 1.0, 0.55], o: [-60, 190], at: [0.41, 0.55] },
+    'blow-bars':   { w: [IX + 0.5, IY + 1.5, 0.66], o: [-40, 200], at: [0.68, 0.82] },
+    'body-liners': { w: [IX + Math.cos(0.7) * 1.3, IY + 1 + Math.sin(0.7) * 1.3, 0.66], o: [180, -130], at: [0.68, 0.82] },
+  };
+  const tags = [...host.querySelectorAll('[data-tag]')].map(el => {
+    const c = T[el.dataset.tag], dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle'), ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    dot.setAttribute('r', 5); ln.setAttribute('pathLength', 1); svg.append(ln, dot);
+    return { el, dot, ln, ...c, v: new THREE.Vector3(...c.w) };
+  });
+  const pv = new THREE.Vector3();
+  function callouts(p) {
+    const w = canvas.clientWidth, h = canvas.clientHeight, s = Math.min(1, w / 1100);
+    for (const g of tags) {
+      const on = p >= g.at[0] && p < g.at[1];
+      pv.copy(g.v).project(camera);
+      const x = (pv.x + 1) / 2 * w, y = (1 - pv.y) / 2 * h;
+      const lx = Math.max(70, Math.min(w - 70, x + g.o[0] * s)), ly = Math.max(70, Math.min(h - 140, y + g.o[1] * s));
+      g.dot.setAttribute('cx', x); g.dot.setAttribute('cy', y);
+      g.ln.setAttribute('x1', x); g.ln.setAttribute('y1', y); g.ln.setAttribute('x2', lx); g.ln.setAttribute('y2', ly);
+      g.el.style.transform = `translate(${lx}px, ${ly}px) translate(-50%, -50%)`;
+      g.el.classList.toggle('on', on); g.dot.classList.toggle('on', on); g.ln.classList.toggle('on', on);
+    }
+  }
   const caps = [...host.querySelectorAll('[data-at]')].map(el => { const [a, b] = el.dataset.at.split(',').map(Number); return { el, a, b }; });
   const bar = host.querySelector('.rail i');
   const progress = () => { const b = host.getBoundingClientRect(), span = b.height - innerHeight; return span > 0 ? Math.max(0, Math.min(1, -b.top / span)) : 0; };
@@ -349,7 +378,7 @@ function run(host) {
   const loop = now => {
     const dt = Math.min(0.033, (now - last) / 1000 || 0.016); last = now;
     const real = Math.min(0.5, (now - (loop.prev || now)) / 1000); loop.prev = now;
-    simulate(dt); const p = progress(); place(pathU(p), real); captions(p); writeRocks(); renderer.render(scene, camera);
+    simulate(dt); const p = progress(); place(pathU(p), real); captions(p); callouts(p); writeRocks(); renderer.render(scene, camera);
     if (on) requestAnimationFrame(loop);
   };
   new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v && !on) { on = true; last = loop.prev = performance.now(); requestAnimationFrame(loop); } on = v; }, { rootMargin: '200px' }).observe(host);

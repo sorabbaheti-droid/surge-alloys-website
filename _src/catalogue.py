@@ -4,10 +4,9 @@ GRADES = {
     'mn14':  dict(name='Mn 14', what='Standard austenitic manganese steel, about 12 to 14% Mn.', where='General crushing: jaws, cones and impact parts in most rock.'),
     'mn18':  dict(name='Mn 18', what='Higher manganese for faster, deeper work hardening.', where='Harder, more abrasive rock and heavier impact.'),
     'mn22':  dict(name='Mn 22', what='The highest manganese type, for the toughest duty.', where='Severe impact and heavy sections.'),
-    'crmo':  dict(name='CrMo alloyed', what='Manganese steel with chromium and molybdenum additions.', where='Where liners spread or deform in service, and for abrasive feed.'),
     'mnxtra': dict(name='MNxtra', what='Our own manganese grade, custom developed by our metallurgists.', where='High wear zones where conventional manganese grades reach their limits.'),
 }
-GRADE_ORDER = ['mn14', 'mn18', 'mn22', 'crmo', 'mnxtra']
+GRADE_ORDER = ['mn14', 'mn18', 'mn22', 'mnxtra']
 STANDARDS = 'ASTM A128, IS 276, EN 10349 or your specification'
 
 FAMILIES = {
@@ -32,13 +31,13 @@ PRODUCTS = [
          where='Jaw crushers.', grades=['mn14', 'mn18']),
     dict(slug='jaw-wedges', name='Jaw wedges', fam='jaw', img='jaw-wedges',
          what='The wedges that clamp the jaw plates in place.',
-         where='Jaw crushers.', grades=['mn14', 'crmo']),
+         where='Jaw crushers.', grades=['mn14', 'mn18']),
     dict(slug='blow-bars', name='Blow bars', fam='impact', img='blow-bars',
          what='The bars on the rotor of a horizontal shaft impactor that strike the feed.',
-         where='Impact crushers where heavy impact keeps manganese hardening.', grades=['mn14', 'mn18', 'crmo']),
+         where='Impact crushers where heavy impact keeps manganese hardening.', grades=['mn14', 'mn18']),
     dict(slug='impact-plates', name='Impact plates', fam='impact', img='impact-plates',
          what='The breaker plates and aprons the feed is thrown against inside an impact crusher.',
-         where='Horizontal shaft impact crushers.', grades=['mn14', 'mn18', 'crmo']),
+         where='Horizontal shaft impact crushers.', grades=['mn14', 'mn18']),
     dict(slug='roll-crusher-shells', name='Roll crusher shells', fam='roll', img='roll-crusher-shells',
          what='The replaceable shells on the rolls of a roll crusher.',
          where='Single and double roll crushers.', grades=['mn14', 'mn18']),
