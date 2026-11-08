@@ -36,7 +36,7 @@
       v.currentTime = 0; v.play().then(() => v.classList.add('on')).catch(() => {});
       v.onended = next;
     };
-    setTimeout(next, 3200);
+    setTimeout(next, 250);
   }
 
   // MNxtra band: sparks drift up out of the glow
