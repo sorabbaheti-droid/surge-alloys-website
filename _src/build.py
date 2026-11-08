@@ -58,7 +58,7 @@ FONTS = ('<link rel="preload" href="/assets/fonts/inter-tight-500.woff2" as="fon
 def page(meta, body):
     path = meta['path']; title = meta['title']
     full = title if meta.get('raw_title') else f'{title} | {NAME}'
-    og = meta.get('og', '/assets/img/hero-furnace.webp')
+    og = meta.get('og', '/assets/img/mantles-row.webp')
     ld = json.dumps(ORG) if path == '/' else ''
     return f'''<!doctype html>
 <html lang="en"><head>
