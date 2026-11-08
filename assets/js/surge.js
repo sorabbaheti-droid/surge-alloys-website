@@ -25,17 +25,21 @@
   const vio = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reduce) { if (!v.src && v.dataset.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); }), { rootMargin: '80px' });
   d.querySelectorAll('video[data-autoplay]').forEach(v => vio.observe(v));
 
-  // Hero film: the furnace still, then the foundry clips crossfade in turn
+  // Hero film: the foundry clips play in turn, each slowly dissolving into the next
   const film = d.querySelector('[data-film]');
   if (film && !reduce) {
-    const vids = [...film.querySelectorAll('video')]; let i = -1;
+    const vids = [...film.querySelectorAll('video')]; let i = -1, z = 1, busy = false;
+    const load = v => { if (!v.src) { v.src = v.dataset.src; v.load(); } };
     const next = () => {
-      vids.forEach(v => v.classList.remove('on'));
-      i = (i + 1) % vids.length; const v = vids[i];
-      if (!v.src) v.src = v.dataset.src;
-      v.currentTime = 0; v.play().then(() => v.classList.add('on')).catch(() => {});
-      v.onended = next;
+      const prev = vids[i]; i = (i + 1) % vids.length; const v = vids[i];
+      load(v); load(vids[(i + 1) % vids.length]);
+      v.currentTime = 0; v.style.zIndex = ++z;
+      v.play().then(() => { v.classList.add('on'); if (prev && prev !== v) setTimeout(() => prev.classList.remove('on'), 2400); busy = false; }).catch(() => { busy = false; });
     };
+    vids.forEach(v => v.addEventListener('timeupdate', () => {
+      if (v !== vids[i] || busy || !v.duration) return;
+      if (v.currentTime > v.duration - Math.min(1.2, v.duration * 0.4)) { busy = true; next(); }
+    }));
     setTimeout(next, 250);
   }
 
