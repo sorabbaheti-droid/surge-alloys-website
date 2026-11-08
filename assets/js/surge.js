@@ -34,11 +34,11 @@
       const prev = vids[i]; i = (i + 1) % vids.length; const v = vids[i];
       load(v); load(vids[(i + 1) % vids.length]);
       v.currentTime = 0; v.style.zIndex = ++z;
-      v.play().then(() => { v.classList.add('on'); if (prev && prev !== v) setTimeout(() => prev.classList.remove('on'), 2400); busy = false; }).catch(() => { busy = false; });
+      v.play().then(() => { v.classList.add('on'); if (prev && prev !== v) setTimeout(() => prev.classList.remove('on'), 2000); busy = false; }).catch(() => { busy = false; });
     };
     vids.forEach(v => v.addEventListener('timeupdate', () => {
       if (v !== vids[i] || busy || !v.duration) return;
-      if (v.currentTime > v.duration - Math.min(1.2, v.duration * 0.4)) { busy = true; next(); }
+      if (v.currentTime > v.duration - 1.8) { busy = true; next(); }
     }));
     setTimeout(next, 250);
   }
