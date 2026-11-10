@@ -14,15 +14,13 @@ FAMILIES = {
     'jaw':    'Jaw crushers',
     'impact': 'Impact crushers',
     'roll':   'Roll crushers',
+    'track':  'Tracked crushers',
 }
 
 PRODUCTS = [
     dict(slug='concaves-and-mantles', name='Concaves and mantles', fam='cone', img='concave-mantle',
          what='The two liners of a cone crusher: the mantle on the moving head, the concave fixed in the bowl around it.',
          where='Secondary and tertiary cone crushers.', grades=['mn18', 'mn22', 'mnxtra']),
-    dict(slug='bowl-liners', name='Bowl liners', fam='cone', img='bowl-liner',
-         what='The stationary liner seated in the bowl of a cone crusher.',
-         where='Cone crushers, opposite the mantle.', grades=['mn18', 'mn22', 'mnxtra']),
     dict(slug='jaw-plates', name='Jaw plates', fam='jaw', img='jaw-plate',
          what='Fixed and swing jaw plates in your tooth profile.',
          where='Primary jaw crushers.', grades=['mn14', 'mn18', 'mnxtra']),
@@ -41,5 +39,8 @@ PRODUCTS = [
     dict(slug='roll-crusher-shells', name='Roll crusher shells', fam='roll', img='roll-crusher-shells',
          what='The replaceable shells on the rolls of a roll crusher.',
          where='Single and double roll crushers.', grades=['mn14', 'mn18']),
+    dict(slug='track-shoes', name='Track shoes', fam='track', img='track-shoe',
+         what='Cast track shoes that carry tracked crushers over broken rock, taking impact, abrasion and bending at once.',
+         where='Tracked mobile crushers, screens and mining machines.', grades=['mn14', 'mn18']),
 ]
 BY_SLUG = {p['slug']: p for p in PRODUCTS}
