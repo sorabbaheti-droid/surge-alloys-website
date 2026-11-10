@@ -198,7 +198,7 @@ p{text-wrap:pretty}
 .sp-b h3{font-size:24px}
 .sp-b p{font-size:14.5px;line-height:1.6}
 .sp-b .g{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--or-deep)}
-@media(max-width:62rem){.show-track{overflow-x:auto;width:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:none}.show-track::-webkit-scrollbar{display:none}.sp{scroll-snap-align:center;width:78vw}.show-head{flex-direction:column;align-items:start}}
+@media(max-width:62rem){.show-track{overflow-x:auto;width:auto;max-width:100%;justify-self:stretch;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:none}.show-track::-webkit-scrollbar{display:none}.sp{scroll-snap-align:center;width:78vw}.show-head{flex-direction:column;align-items:start}}
 
 /* MNxtra: the one dark, glowing moment */
 .mnx{position:relative;overflow:hidden;padding:clamp(100px,12vw,170px) 0;background:radial-gradient(60% 80% at 50% 110%,#5a2508 0%,#2a1408 45%,#16100c 100%);color:#d9cfc4}
