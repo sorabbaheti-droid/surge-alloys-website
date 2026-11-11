@@ -25,6 +25,14 @@
   const vio = new IntersectionObserver(es => es.forEach(e => { const v = e.target; if (e.isIntersecting && !reduce) { if (!v.src && v.dataset.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause(); }), { rootMargin: '80px' });
   d.querySelectorAll('video[data-autoplay]').forEach(v => vio.observe(v));
 
+  // The 3D circuit is heavy, so it loads only when the reader is getting close to it
+  const circ = d.querySelector('[data-circuit]');
+  if (circ) {
+    const src = new URL('circuit.js', (d.currentScript || d.querySelector('script[src*="surge.js"]')).src).href;
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); import(src).then(() => window.ScrollTrigger && ScrollTrigger.refresh()); } }, { rootMargin: '1200px 0px' });
+    io.observe(circ);
+  }
+
   // Hero film: the foundry clips play in turn, each slowly dissolving into the next
   const film = d.querySelector('[data-film]');
   if (film && !reduce) {
